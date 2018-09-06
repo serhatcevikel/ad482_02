@@ -1,0 +1,37 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+  orientation: columns
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Articles per Day
+
+```{r, fig.width=5, fig.height=5}
+articles <- 14
+valueBox(articles, icon = "fa-pencil")
+```
+
+### Comments per Day
+
+```{r, fig.width=5, fig.height=5}
+comments <- 50
+valueBox(comments, icon = "fa-comments")
+```
+
+### Spam per Day
+
+```{r, fig.width=5, fig.height=5}
+spam <- 20
+valueBox(spam, 
+         icon = "fa fa-car",
+         color = ifelse(spam > 10, "warning", "primary"))
+```
+

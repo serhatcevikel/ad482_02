@@ -1,0 +1,513 @@
+---
+title: "K-NEAREST NEIGHBOURS (KNN)"
+#output: html_notebook
+#output: html_document
+#output: slidy_presentation
+#output: ioslides_presentation
+output: learnr::tutorial
+#output: revealjs::revealjs_presentation
+runtime: shiny_prerendered
+#runtime: shiny
+---
+
+```{r setup, eval = TRUE, include=FALSE}
+library(learnr)
+library(widgetframe)
+#library(revealjs)
+library(shiny)
+library(tidyverse)
+library(DT)
+library(rpivotTable)
+library(knitr)
+library(kableExtra)
+library(randomcoloR)
+library(plotly)
+library(data.table)
+library(gridExtra)
+library(printr)
+library(plot3D)
+
+options(rgl.useNULL=TRUE)
+library(rgl)
+library(plot3Drgl)
+library(shinyRGL)
+
+iris_dt <- as.data.table(iris)
+
+#tutorial_options(exercise.timelimit = 60)
+#tutorial_options(exercise.eval = T)
+#tutorial_options(exercise.checker = checkr::check_for_learnr)
+
+rmarkdown::knitr_options_html(fig_width = 10, fig_height = 10, fig_retina = 2, keep_md = FALSE, dev = "png")
+
+knitr::opts_chunk$set(echo = FALSE
+                      )
+```
+# KNN
+<!--
+<embed src ="../dashboard/flex.Rmd" height=700px width=700px />
+-->
+
+<!--
+<embed src ="../radiant/inst/app" height=1500px width=2000px />
+-->
+
+## The "iris" dataset
+
+- A famous database dates back to 1936 and used by a classic paper on Botanics by R.A. Fisher
+- The data set contains 3 classes of 50 instances each, where each class refers to a type of iris plant.
+
+Info on dataset is as follow
+```{r iris, eval = TRUE, echo = FALSE}
+help(iris)
+```
+
+Let's first view the dataset:
+
+- The interactive features are:
+  - Page size can be altered by "Show xx entries"
+  - A global filter (on all columns) can be enabled by typing into "Search"
+  - Data can be sorted on any one of the columns by hitting the column headers
+  - Each column can be filtered with the combo boxes that appear by hitting the "All"s below the headers
+  - Pages can be navigated from the numbers below
+  - When you hover across the rows, the row under mouse is highlighted
+
+```{r, eval = FALSE, echo = FALSE}
+dt <-  datatable(
+  head(iris, 20), 
+  options = list(
+     columnDefs = list(list(className = 'dt-center', targets = 5)),
+     pageLength = 5, lengthMenu = c(5, 10, 15, 20)),
+  fillContainer = T)
+
+frameWidget(dt, height = 350, width = '95%')
+
+```
+
+<!--
+<p>
+<embed src="../data/iris.Rmd" style="width:300%;height:300%;">
+</embed>
+</p>
+-->
+
+<!--
+![](https://www.youtube.com/watch?v=3jMuEa_ZfXY)
+-->
+
+<!--
+<embed src ="../data/iris.Rmd" height=700px width=700px />
+-->
+
+<!--
+![](../data/iris.Rmd)
+-->
+
+```{r DT2, eval = TRUE, echo = FALSE}
+
+# note that iris_dt is a data.table object
+# collect unique values of Species
+levs <- iris_dt[,levels(Species)]
+
+# create random and distinctive colors for unique species
+cols <- randomcoloR::distinctColorPalette(length(levs))
+
+# shuffle the rows
+iris_shuf <- dplyr::sample_frac(iris_dt, 1)
+
+# create the datatable
+DT1 <- DT::datatable(iris_shuf,
+          filter = "top",
+          options = list(autoWidth = T))
+
+# change the background colors of the Species
+DT1 <- DT::formatStyle(DT1, 
+                       "Species",
+                         backgroundColor = DT::styleEqual(levs,
+                                                          cols)
+                      )
+
+widgetframe::frameWidget(DT1, height = 700, width = 700)
+#DT::renderDT(DT1)
+
+```
+
+
+
+
+## Summarize the data
+
+### Structure of the data
+
+We can first view the structure of the data: The classes of variables and some additional info
+
+```{r, eval = TRUE, echo = FALSE}
+str(iris_dt)
+```
+
+So the first four variables are numeric variables whereas Species variable is "factor" - so it is categoric.
+
+
+As we see, there are three categories of Species in the dataset:
+
+```{r levels1, results = 'asis', eval = TRUE, echo = FALSE}
+levs %>%
+  kableExtra::cell_spec(format = "html", background = cols) %>%
+  t() %>%
+  knitr::kable(escape = F, caption = "Species") %>%
+  kableExtra::kable_styling()
+
+```
+
+<!--
+### Summarize the data with rpivotTable:
+
+Now take your time to play with the data using the below rpivotTable:
+- Drag and drop variable on to the axes
+- Filter the values
+- Select a renderer (Table, etc) and an aggregator (Count, etc)
+
+```{r rpt1, eval = TRUE, echo = FALSE}
+rpivotTable(iris_dt,
+            rows = c("Species"),
+            #cols = "Treatment",
+            aggregatorName = "Count",
+            rendererName = "Table")
+```
+
+```{r vars, echo = FALSE}
+var1 <- "setosa"
+#var2 <- "chilled"
+
+val1 <- iris_dt[Species == "setosa", .N]
+
+val2 <- iris_dt %>%
+  dplyr::filter( Species == var1) %>%
+  dplyr::count() %>%
+  as.integer()
+
+```
+
+So the count of observations where **`r names(iris_dt)[5]`** column is **"`r var1`"** is **`r val1`**.
+-->
+
+### Summarize the dataset
+
+Now summarize some statistics about the dataset:
+
+```{r sum1, eval = TRUE, echo = FALSE}
+summary(iris_dt) %>%
+knitr::kable() %>%
+kableExtra::kable_styling()
+```
+
+- For the first four variables some measures on the dispersion of numeric values are listed (min, quartiles, median, max)
+- For the last variable, the count of each discrete value is listed
+
+## Histograms and Boxplots
+
+- Now we will plot the histogram and boxplot of the variables
+- From the dropdown menu below, you can select the variable to plot
+- Determine the number of bins with the slider
+
+
+```{r, echo = FALSE}
+vars <- names(iris_dt)[1:4]
+
+plotlyOutput("bar_1")
+selectInput("var_1", label = "Variable:",
+            choices = vars, selected = vars[1])
+#selectInput("var_2", label = "Category:",
+#            choices = levs, selected = vars[1])
+sliderInput("var_3", label = "Number of Bins", min = 1, max = 10, value = 5, width = 300)
+```
+
+```{r, context = "server"}
+output$bar_1 <- renderPlotly({
+  irissub <- iris_dt %>%
+      #dplyr::filter( Species == input$var_2)
+      dplyr::filter()
+  p1 <- ggplot(irissub, aes(irissub[[input$var_1]])) +
+        geom_histogram(bins = input$var_3) +
+        coord_cartesian(ylim=c(0,50)) +
+        labs(x = input$var_1) +
+        facet_wrap(~ Species, nrow = length(levs))
+  
+  p2 <- ggplot(irissub, aes(x = 0, y = irissub[[input$var_1]])) +
+        geom_boxplot() +
+        theme(axis.text.y=element_blank(), axis.ticks.y=element_blank()) +
+        coord_flip() +
+        labs(x = "", y = input$var_1) +
+        #scale_x_discrete(limits = rev(levs)) +
+        facet_wrap(~ Species, nrow = 3)
+  
+  #p <- gridExtra::grid.arrange(p1, p2, ncol = 2)
+  #p
+  #ggplotly(p2)
+  subplot(p1, p2, nrows = 1)
+
+})
+
+```
+
+- As we see, especially Sepal.Length, Petal.Length and Petal.Width varies much across Species categories. 
+
+We can also combine two variables to get a 3D view of a histogram:
+
+```{r, echo = FALSE}
+
+cuts <- 1:20
+
+selectInput("var_11", label = "Variable 1:",
+            choices = vars, selected = vars[1])
+selectInput("var_12", label = "Variable 2:",
+            choices = vars, selected = vars[2])
+selectInput("var_13", label = "Category:",
+            choices = levs, selected = levs[1])
+sliderInput("var_10", label = "Number of Bins", min = 1, max = 10, value = 5, width = 300)
+
+rgl::rglwidgetOutput("hist3d", width = 750, height = 600)
+```
+
+```{r, echo = FALSE, context = "server"}
+output$hist3d <- rgl::renderRglwidget({
+  irissub <- iris_dt %>%
+      dplyr::filter( Species == input$var_13)
+      
+  x2 <- irissub[[input$var_11]]
+  y2 <- irissub[[input$var_12]]
+  labx <- input$var_11
+  laby <- input$var_12
+  bins <- input$var_10
+  
+  ##  Create cuts:
+  x_c <- cut(x2, as.integer(bins))
+  y_c <- cut(y2, as.integer(bins))
+
+  ##  Calculate joint counts at cut levels:
+  z1 <- table(x_c, y_c)
+
+  ## Calculate break points
+  breaks <- function(vec) (max(vec) - min(vec)) / bins * 1:bins + min(vec)
+
+  xb <- breaks(x2)
+  yb <- breaks(y2)
+  
+  ##  Plot as a 3D histogram:
+  hist3D1 <- plot3Drgl::hist3Drgl(x = xb,
+                                  y = yb,
+                                  z = z1,
+                                  axes = T,
+                                  label = T,
+                                  xlab = labx,
+                                  ylab = laby,
+                                  zlab = "frequencies",
+                                  nticks = bins,
+                                  ticktype = "detailed"
+                                  )
+  scene <- scene3d()
+  rgl::rglwidget(scene)
+
+})
+
+```
+
+You can rotate the plot in any direction with the mouse to have a better view.
+
+With the default selections, the 3D histogram of the Sepal.Width vs. Sepal.Length variables for setosa species show that, there is concentration of observations where Sepal.Width is between 3.5-4 and Sepal.Length is between 5-5.5. Scatter plots will confirm this finding.
+
+
+And density plots are yet another way to visualize the distribution of a variable across categories:
+
+```{r, echo = FALSE}
+vars <- names(iris_dt)[1:4]
+
+plotlyOutput("density_1")
+selectInput("var_21", label = "Variable:",
+            choices = vars, selected = vars[1])
+```
+
+```{r, context = "server"}
+output$density_1 <- renderPlotly({
+  p1 <-  ggplot(iris_dt, mapping = aes(iris_dt[[input$var_21]],
+                                 color = factor(iris_dt[["Species"]])
+)) +
+        geom_density(adjust =5, mapping = aes(text = paste("Species", ": ", iris_dt[["Species"]], "\n", input$var_21, ": ", iris_dt[[input$var_21]]))) +
+        
+        guides(color=guide_legend(title=NULL)) +
+        labs(x = input$var_21)
+        
+  ggplotly(p1, tooltip = c("text"))
+
+})
+```
+
+## Scatter Plots
+
+- Now we create scatter plots between selected variables
+- Please select two different variables from the dropdown menus
+- Note that observations of different species are colored respectively:
+
+
+```{r, echo = FALSE}
+vars <- names(iris_dt)[1:4]
+
+plotlyOutput("scatter_1")
+selectInput("var_4", label = "Variable 1:",
+            choices = vars, selected = vars[1])
+selectInput("var_5", label = "Variable 2:",
+            choices = vars, selected = vars[2])
+```
+
+```{r, context = "server"}
+output$scatter_1 <- renderPlotly({
+  p <-  ggplot(iris_dt, mapping = aes(x = iris_dt[[input$var_4]],
+                                 y = iris_dt[[input$var_5]],
+                                 color = factor(iris_dt[["Species"]]),
+)) +
+        geom_point(mapping = aes(text = paste("Species", ": ", iris_dt[["Species"]], "\n",
+                                              input$var_4, ": ", iris_dt[[input$var_4]], "\n",
+                                              input$var_5, ": ", iris_dt[[input$var_5]]))) + 
+        geom_smooth() +
+        guides(color=guide_legend(title=NULL)) +
+        labs(x = input$var_4, y = input$var_5)
+        
+  ggplotly(p, tooltip = c("text"))
+
+})
+
+```
+
+You can:
+
+- Hover over points to get info on the data,
+- Click on the Species categories on the legend to hide or show respective points  
+
+We can also create a 3d version of this scatterplot:
+
+```{r, echo = FALSE}
+vars <- names(iris_dt)[1:4]
+
+plotlyOutput("scatter_2", width = 900, height = 600)
+selectInput("var_31", label = "Variable 1:",
+            choices = vars, selected = vars[1])
+selectInput("var_32", label = "Variable 2:",
+            choices = vars, selected = vars[2])
+```
+
+```{r, context = "server"}
+output$scatter_2 <- renderPlotly({
+  
+    plot_ly(x = iris_dt[[input$var_31]],
+          y = iris_dt[[input$var_32]],
+          z = iris_dt[["Species"]],
+          type = "scatter3d",
+          color = iris_dt[["Species"]]) %>%
+    plotly::layout(scene = list(
+      xaxis = list(title = input$var_31),
+      yaxis = list(title = input$var_32),
+      zaxis = list(title = "Species")))
+
+    
+})
+
+  
+
+```
+
+
+## Task: Learn from labeled observations
+
+Now our task at hand is:
+
+- Select a sample of the whole dataset, keeping the "Species" labelings
+- Based on the Sepal.Length and Petal.Length features of the plants, learn how to classify the plants as "`r levs`"
+- Take the remaining portion of the dataset, with deleted Species labelings and try to figure out which Species categories they belong to, based on their Sepal.Length and Petal.Length features
+
+The algorithm we will use is "K-Nearest Neighbours" or KNN. Below you can find some supplementary resources to understand how KNN works:
+
+### "How kNN algorithm works"
+
+by Thales Sehn Körting
+
+"In this video I describe how the k Nearest Neighbors algorithm works, and provide a simple example using 2-dimensional data and k = 3."
+
+![](http://www.youtube.com/watch?v=UqYde-LULfs)
+
+
+### "K - Nearest Neighbors - KNN Fun and Easy Machine Learning"
+
+by Augmented Startups
+
+"https://www.udemy.com/machine-learnin...
+
+In pattern recognition, the KNN algorithm is a method for classifying objects based on closest training examples in the feature space. KNN is a type of instance-based learning, or lazy learning where the function is only approximated locally and all computation is delayed until classification. The KNN is the fundamental and simplest classification technique when there is little or no prior knowledge about the distribution of the data. The K in KNN refers to number of nearest neighbors that the classifier will use to make its predication. In this video we use Game of Thrones example to explain kNN."
+
+
+![](http://www.youtube.com/watch?v=MDniRwXizWo)
+
+
+
+### "K-Nearest Neighbours | GeeksforGeeks"
+by Rajan Girsa
+
+"Find Complete Code at GeeksforGeeks Article: http://www.geeksforgeeks.org/k-neares..."
+
+![](http://www.youtube.com/watch?v=odqIu23OSbs)
+
+
+### K NEAREST NEIGHBOR : STEP BY STEP TUTORIAL
+<a href="https://www.listendata.com/2017/12/k-nearest-neighbor-step-by-step-tutorial.html" target="_blank" rel="noopener">K NEAREST NEIGHBOR : STEP BY STEP TUTORIAL</a>
+by Deepanshu Bhalla
+<!--
+[K NEAREST NEIGHBOR : STEP BY STEP TUTORIAL (R-Bloggers link)](https://www.r-bloggers.com/k-nearest-neighbor-step-by-step-tutorial/)
+-->
+
+## How KNN works
+
+\def\green{\color{green} {\bf {\text{green}}}}
+\def\blue{\color{blue} {\bf {\text{blue}}}}
+\def\red{\color{red} {\bf {\text{red}}}}
+
+Let's say, we have points labeled as $\green$ and $\blue$
+
+We also have an **unlabeled** $\red$ point.
+
+![](https://upxacademy.com/wp-content/uploads/2016/11/K-nearest-neighbour.gif)
+
+The question is, learning from the labeled points, should we classify $\red$ as $\green$ or $\blue$?
+
+Note that, the points are plotted in 2D which we may think as the features that we use for classification (in our iris dataset, these may be Sepal.Length and Petal.Length)
+
+Using the feature values of the points, we first calculate the distance of labeled $\green$ and $\blue$ points to our unlabeled $\red$ point. There are alternative methods to calculate the distance but most common method is the euclidian distance we know from geometry:
+
+![2D euclidian distance](https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Frosalind.info%2Fmedia%2FEuclidean_distance.png&f=1)
+
+![3D euclidian distance](https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fhlab.stanford.edu%2Fbrian%2Feuclid3.gif&f=1)
+
+General formula is (from wikipedia):
+
+$$
+{\displaystyle {\begin{aligned}d(\mathbf {p} ,\mathbf {q} )=d(\mathbf {q} ,\mathbf {p} )&={\sqrt {(q_{1}-p_{1})^{2}+(q_{2}-p_{2})^{2}+\cdots +(q_{n}-p_{n})^{2}}}\\[8pt]&={\sqrt {\sum _{i=1}^{n}(q_{i}-p_{i})^{2}}}.\end{aligned}}}
+$$
+
+
+After calculating the distances, we arbitrarily choose a "k" value for the nearest neighbours - the number of points with least distance to unlabeled $\red$ point
+
+Reverting back to the knn diagram:
+
+![](https://upxacademy.com/wp-content/uploads/2016/11/K-nearest-neighbour.gif)
+
+If we choose k = 3, the inner circle shows the nearest 3 neighbours of $\red$:
+
+- We see that two neighbours are $\green$ and one neighbour is $\blue$
+- With majority vote, $\red$ point is now labeled as $\green$
+
+However if we choose k = 7, the outer circle shows the nearest 7 neighbours of $\red$:
+
+- We see that three neighbours are $\green$ and four neighbours are $\blue$
+- With majority vote, $\red$ point is now labeled as $\blue$
+
+So the choice of k is decisive on the labeling of unlabeled points. Note that we should select an odd k in order to prevent tie vote issues (multiple categories with the same number of votes)
+
+## Applying KNN algorithm on iris dataset
