@@ -1,8 +1,8 @@
     cranlist <- c("devtools", "tidyverse", "rmarkdown", "knitr", "DT", "data.table", "microbenchmark",
                     "printr", "kableExtra", "gridExtra", "learnr", "plotly", "rpivotTable", "plot3D",
-                    "cowplot", "adegraphics", "D3partitionR", "dygraphs", "formattable", "GGally",
-                    "ggforce", "radiant", "shinydashboard", "visreg", "flexdashboard", "randomcoloR",
-                    "rgl", "shinyRGL", "plot3Drgl", "widgetframe", "leaflet", "httr",
+                    "cowplot", "adegraphics", "D3partitionR", "dygraphs", "formattable", "GGally", "threejs",
+                    "units", "ggforce", "ggiraphExtra", "radiant", "shinydashboard", "visreg", "flexdashboard", "randomcoloR",
+                    "rgl", "shinyRGL", "plot3Drgl", "widgetframe", "leaflet", "httr", "r2d3",
                     "Quandl", "mlbench", "AppliedPredictiveModeling",
                     "class", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
                     "gmodels", "evclass", "C50", "caret", "mclust", "tree", "psych",
@@ -14,8 +14,7 @@
                     "BBmisc")
 
 
-    githublist <- c("lionel-/redpen", "dtkaplan/checkr", "cardiomoon/ggiraphExtra",
-                    "AckerDWM/gg3D", "rstudio/r2d3", "bwlewis/rthreejs")
+    githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
             
 
     #mirid <- match("tr", getCRANmirrors()[,8])
