@@ -4,14 +4,14 @@
                     "units", "ggforce", "ggiraphExtra", "radiant", "shinydashboard", "visreg", "flexdashboard", "randomcoloR",
                     "rgl", "shinyRGL", "plot3Drgl", "widgetframe", "leaflet", "httr", "r2d3",
                     "Quandl", "mlbench", "AppliedPredictiveModeling",
-                    "class", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
+                    "class", "knnGarden", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
                     "gmodels", "evclass", "C50", "caret", "mclust", "tree", "psych",
                     "lmtest", "car", "MASS", "fit.models", "party", "reshape2",
                     "neuralnet", "nnet", "klaR", "kernlab", "svmpath", "arules", "arulesViz",
                     "sqldf", "ks", "fpc", "NbClust", "cluster", "compareGroups", "HDclassif",
                     "corrplot", "FactoMineR", "GPArotation", "factoextra", "nFactors", "ggmap",
                     "ipred", "adabag", "randomForest", "mboost", "pROC", "gbm",
-                    "BBmisc")
+                    "BBmisc", "rebmix")
 
 
     githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
