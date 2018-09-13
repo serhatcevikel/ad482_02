@@ -11,7 +11,9 @@
                     "sqldf", "ks", "fpc", "NbClust", "cluster", "compareGroups", "HDclassif",
                     "corrplot", "FactoMineR", "GPArotation", "factoextra", "nFactors", "ggmap",
                     "ipred", "adabag", "randomForest", "mboost", "pROC", "gbm",
-                    "BBmisc", "rebmix")
+                    "BBmisc", "rebmix", "listviewer", "reactR", "repr", "IRdisplay", "xtable", "egg",
+                    "ggExtra", "ggfortify", "autoplotly", "ggExtra", "ggplotify", "h2o", "jsonlite",
+                    "wordcloud2", "Hmisc", "data.tree")
 
 
     githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
