@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# install nbextension files
+# edit nbconvert config files
+jupyter contrib nbextension install --system
+
+# configuring the notebook server to load the server extension
+jupyter nbextensions_configurator enable --system
+
+# nbpresent
+jupyter nbextension install nbpresent --py --overwrite
+jupyter nbextension enable nbpresent --py
+jupyter serverextension enable nbpresent --py
+
+jupyter-nbextension enable codefolding/main
+jupyter-nbextension install rise --py --sys-prefix
+jupyter-nbextension enable splitcell/splitcell
+jupyter-nbextension enable hide_input/main
+jupyter-nbextension enable nbextensions_configurator/tree_tab/main
+jupyter-nbextension enable scroll_down/main
+jupyter-nbextension enable toc2/main
+jupyter-nbextension enable autoscroll/main 
+jupyter-nbextension enable autoscroll/main 
+jupyter-nbextension enable exercise/main
+jupyter-nbextension enable nbextensions_configurator/config_menu/main
+jupyter-nbextension enable exercise2/main
