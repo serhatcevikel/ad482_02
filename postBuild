@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+pip install jupyter_contrib_nbextensions
+pip install jupyter-nbextensions-configurator
+pip install RISE
+pip install nbpresent
+
 # install nbextension files
 # edit nbconvert config files
 jupyter contrib nbextension install --system
