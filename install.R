@@ -36,8 +36,10 @@
     { 
         if (!require(package, character.only = T, quietly = T))
         {
-            devtools::install_github(package)
+            devutools::install_github(package)
         }
     }
 #install.packages("radiant", repos = "https://radiant-rstats.github.io/minicran/")
 
+    # install juniper
+    installJuniper()

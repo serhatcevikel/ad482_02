@@ -1,17 +1,17 @@
 #!/bin/bash
 
 
-pip install jupyter_contrib_nbextensions
-pip install jupyter-nbextensions-configurator
-pip install RISE
-pip install nbpresent
+#pip install jupyter_contrib_nbextensions
+#pip install jupyter-nbextensions-configurator
+#pip install RISE
+#pip install nbpresent
 
 # install nbextension files
 # edit nbconvert config files
-jupyter contrib nbextension install --system
+jupyter contrib nbextension install --user
 
 # configuring the notebook server to load the server extension
-jupyter nbextensions_configurator enable --system
+jupyter nbextensions_configurator enable --user
 
 # nbpresent
 jupyter nbextension install nbpresent --py --overwrite
