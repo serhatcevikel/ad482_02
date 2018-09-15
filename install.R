@@ -42,4 +42,4 @@
 #install.packages("radiant", repos = "https://radiant-rstats.github.io/minicran/")
 
     # install juniper
-    installJuniper()
+    JuniperKernel::installJuniper()
