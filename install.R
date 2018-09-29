@@ -14,7 +14,7 @@
                     "BBmisc", "rebmix", "listviewer", "reactR", "repr", "IRdisplay", "xtable", "egg",
                     "ggExtra", "ggfortify", "autoplotly", "ggExtra", "ggplotify", "h2o", "jsonlite",
                     "wordcloud2", "Hmisc", "data.tree", "stargazer", "rlist", "JuniperKernel",
-                    "d3r", "rpart", "rpart.plot", "rattle")
+                    "d3r", "rpart", "rpart.plot", "rattle", "nycflights13")
 
 
     githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
