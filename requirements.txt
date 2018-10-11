@@ -1,4 +1,0 @@
-jupyter_contrib_nbextensions
-jupyter-nbextensions-configurator
-RISE
-nbpresent
