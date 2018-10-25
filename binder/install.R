@@ -2,7 +2,7 @@
                     "printr", "kableExtra", "gridExtra", "learnr", "plotly", "rpivotTable", "plot3D",
                     "cowplot", "adegraphics", "D3partitionR", "dygraphs", "formattable", "GGally", "threejs",
                     "units", "ggforce", "ggiraphExtra", "radiant", "shinydashboard", "visreg", "visNetwork", "flexdashboard", "randomcoloR",
-                    "rgl", "shinyRGL", "plot3Drgl", "widgetframe", "leaflet", "httr", "r2d3",
+                    "sparkline", "rgl", "shinyRGL", "plot3Drgl", "widgetframe", "leaflet", "httr", "r2d3",
                     "Quandl", "mlbench", "AppliedPredictiveModeling",
                     "class", "knnGarden", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
                     "gmodels", "evclass", "C50", "caret", "mclust", "tree", "psych",
