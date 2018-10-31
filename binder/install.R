@@ -6,15 +6,15 @@
                     "Quandl", "mlbench", "AppliedPredictiveModeling",
                     "class", "knnGarden", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
                     "gmodels", "evclass", "C50", "caret", "mclust", "tree", "psych",
-                    "lmtest", "car", "MASS", "fit.models", "party", "reshape2",
-                    "neuralnet", "nnet", "klaR", "kernlab", "svmpath", "arules", "arulesViz",
+                    "lmtest", "broom", "TSrepr", "car", "MASS", "fit.models", "party", "reshape2",
+                    "neuralnet", "nnet", "RSNNS", "klaR", "kernlab", "svmpath", "arules", "arulesViz",
                     "sqldf", "ks", "fpc", "NbClust", "cluster", "compareGroups", "HDclassif",
                     "corrplot", "FactoMineR", "GPArotation", "factoextra", "nFactors", "ggmap",
                     "ipred", "adabag", "randomForest", "mboost", "pROC", "gbm",
                     "BBmisc", "rebmix", "listviewer", "reactR", "repr", "IRdisplay", "xtable", "egg",
                     "ggExtra", "ggfortify", "autoplotly", "ggExtra", "ggplotify", "h2o", "jsonlite",
                     "wordcloud2", "Hmisc", "data.tree", "stargazer", "rlist", "JuniperKernel",
-                    "d3r", "rpart", "rpart.plot", "rattle", "nycflights13")
+                    "d3r", "rpart", "rpart.plot", "rattle", "nycflights13", "archdata")
 
 
     githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
