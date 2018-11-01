@@ -7,7 +7,7 @@
                     "class", "knnGarden", "ISLR", "RWeka", "SnowballC", "tm", "wordcloud", "e1071",
                     "gmodels", "evclass", "C50", "caret", "mclust", "tree", "psych",
                     "lmtest", "fit.models", "lindia", "broom", "TSrepr", "car", "MASS", "forecast",
-                    "party", "reshape2",
+                    "mctest", "ppcor", "party", "reshape2",
                     "neuralnet", "nnet", "RSNNS", "klaR", "kernlab", "svmpath", "arules", "arulesViz",
                     "sqldf", "ks", "fpc", "NbClust", "cluster", "compareGroups", "HDclassif",
                     "corrplot", "FactoMineR", "GPArotation", "factoextra", "nFactors", "ggmap",
