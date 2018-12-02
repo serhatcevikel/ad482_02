@@ -18,7 +18,8 @@
                     "d3r", "rpart", "rpart.plot", "rattle", "nycflights13", "archdata",
                     "vcd", "irr", "ROCR", "plotROC", "gains", "lift", "BCA",
                     "fastDummies", "mice", "VIM", "tidyimpute", "ade4", "flexclust", "sparcl", "vegan",
-                    "plyr", "pheatmap", "d3heatmap", "heatmaply", "fastcluster", "dendextend", "circlize")
+                    "plyr", "pheatmap", "d3heatmap", "heatmaply", "fastcluster", "dendextend", "circlize",
+                    "NeuralNetTools", "classInt", "Formula", "Metrics", "deepnet")
 
 
     githublist <- c("lionel-/redpen", "dtkaplan/checkr", "AckerDWM/gg3D")
